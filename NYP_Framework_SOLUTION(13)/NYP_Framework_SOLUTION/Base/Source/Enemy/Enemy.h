@@ -2,6 +2,7 @@
 #include "../GenericEntity.h"
 #include "../GroundEntity.h"
 #include "../Waypoint/Waypoint.h"
+#include "../PlayerInfo/PlayerInfo.h"
 
 #include <vector>
 using namespace std;
@@ -17,6 +18,8 @@ protected:
 	Vector3 maxBoundary, minBoundary;
 	GroundEntity* m_pTerrain;
 
+
+	CPlayerInfo* playerInfo;
 	// Vector containing IDs of Waypoints
 	vector<int> listOfWaypoints;
 	// Current ID of Waypoint
@@ -50,6 +53,8 @@ public:
 	Vector3 GetTarget(void) const;
 	// Get Up
 	Vector3 GetUp(void) const;
+
+	Vector3 doorLocation;
 	// Get the terrain for the player info
 	GroundEntity* GetTerrain(void);
 	// Get next Waypoint for this CEnemy
@@ -62,4 +67,7 @@ public:
 	void Constrain(void);
 	// Render
 	void Render(void);
+
+	// Set door location
+	void SetDoorLocation(const Vector3& doorLocation);
 };
