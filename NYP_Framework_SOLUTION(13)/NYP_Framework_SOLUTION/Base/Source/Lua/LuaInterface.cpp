@@ -3,6 +3,9 @@
 #include <stdarg.h>
 using namespace std;
 
+//what the hell do you do with this ?
+
+
 // Allocating and initializing CLuaInterface's static data member.  
 // The pointer is allocated but not the object's constructor.
 CLuaInterface *CLuaInterface::s_instance = 0;

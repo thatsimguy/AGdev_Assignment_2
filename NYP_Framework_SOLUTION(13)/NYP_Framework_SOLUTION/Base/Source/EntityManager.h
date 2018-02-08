@@ -21,6 +21,7 @@ public:
 	bool MarkForDeletion(EntityBase* _existingEntity);
 
 	void SetSpatialPartition(CSpatialPartition* theSpatialPartition);
+	void ClearEntitty();
 
 private:
 	EntityManager();
@@ -47,6 +48,14 @@ private:
 	
 	// Handler to Spatial Partition
 	CSpatialPartition* theSpatialPartition;
+
+	/*void EntityManager::ClearEntities()
+	{
+		for (auto it : entityList) {
+			delete it;
+		}
+		entityList.clear();
+	}*/
 };
 
 #endif // ENTITY_MANAGER_H

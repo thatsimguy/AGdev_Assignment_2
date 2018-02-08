@@ -432,8 +432,21 @@ void SceneText::Exit()
 		cout << "Unable to drop PlayerInfo class" << endl;
 #endif
 	}
+	GraphicsManager::GetInstance()->DetachCamera();
 
+	
+	EntityManager::GetInstance()->ClearEntitty();
+	MeshBuilder::GetInstance()->RemoveMesh("SKYBOX_FRONT");
+	MeshBuilder::GetInstance()->RemoveMesh("SKYBOX_TOP");
+	MeshBuilder::GetInstance()->RemoveMesh("SKYBOX_LEFT");
+	MeshBuilder::GetInstance()->RemoveMesh("SKYBOX_RIGHT");
+	MeshBuilder::GetInstance()->RemoveMesh("cube");
+	//Fucking Bug I have to fix at home......
+
+
+	//MeshBuilder::GetInstance()->RemoveMesh("")
 	// Delete the lights
 	delete lights[0];
 	delete lights[1];
+	
 }

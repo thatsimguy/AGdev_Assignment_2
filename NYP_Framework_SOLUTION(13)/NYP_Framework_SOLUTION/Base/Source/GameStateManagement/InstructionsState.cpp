@@ -17,6 +17,8 @@ using namespace std;
 
 #include "InstructionsState.h"
 
+
+//Hey Hey he didn't say its not possible right ? :3
 CInstructionState::CInstructionState()
 {
 }
@@ -33,7 +35,7 @@ void CInstructionState::Init()
 
 	// Load all the meshes
 	MeshBuilder::GetInstance()->GenerateQuad("INSTRUCTIONSTATE_BKGROUND", Color(1, 1, 1), 1.f);
-	MeshBuilder::GetInstance()->GetMesh("INSTRUCTIONSTATE_BKGROUND")->textureID = LoadTGA("Image//MaintainanceState.tga");
+	MeshBuilder::GetInstance()->GetMesh("INSTRUCTIONSTATE_BKGROUND")->textureID = LoadTGA("Image//InstructionsState.tga");
 
 	MeshBuilder::GetInstance()->GenerateQuad("ARROW", Color(1, 1, 1), 1.f);
 	MeshBuilder::GetInstance()->GetMesh("ARROW")->textureID = LoadTGA("Image//Arrow.tga");
@@ -75,49 +77,36 @@ void CInstructionState::Update(double dt)
 	}
 		
 
-	//Selection of Type
-	if (KeyboardController::GetInstance()->IsKeyDown(VK_UP) && delay >= ButtonCooldown
-		|| KeyboardController::GetInstance()->IsKeyDown('W') && delay >= ButtonCooldown)
-	{
-		if (SelectedOptions == Game) 
-		{
-			SelectedOptions = Return;
-			
+	////Selection of Type
+	//if (KeyboardController::GetInstance()->IsKeyDown(VK_UP) && delay >= ButtonCooldown
+	//	|| KeyboardController::GetInstance()->IsKeyDown('W') && delay >= ButtonCooldown)
+	//{
+	//	/*if (SelectedOptions == Game) 
+	//	{
+	//		SelectedOptions = Return;
+	//		
 
-		}
-		else if (SelectedOptions == Return)
-		{
-			SelectedOptions = Game;
-			
-		}
-		delay = 0.0f;
-	}
-	/*if (KeyboardController::GetInstance()->IsKeyDown(VK_DOWN) && delay >= ButtonCooldown 
-		|| KeyboardController::GetInstance()->IsKeyDown('D') && delay >= ButtonCooldown)
-	{
-		if (SelectedOptions == Return)
-		{
-			SelectedOptions = Game;
-		}
-		else if (SelectedOptions == Game)
-		{
-			SelectedOptions = Return;
-		}
-	}
-	*/
+	//	}
+	//	else if (SelectedOptions == Return)
+	//	{
+	//		SelectedOptions = Game;
+	//		
+	//	}*/
+
+	//	//if (SelectedOptions == Exit)
+	//	//{
+	//	//	SelectedOptions = Exit;
+	//	//}
+
+	//	delay = 0.0f;
+	//}
+	
 
 	//Confirm Selection
 
 	if (KeyboardController::GetInstance()->IsKeyDown(VK_RETURN) && delay >= ButtonCooldown)
 	{
-		if (SelectedOptions == Game) {
-			SceneManager::GetInstance()->SetActiveScene("GameState");
-
-		}
-		else if (SelectedOptions == Return)
-		{
-			SceneManager::GetInstance()->SetActiveScene("MenuState");
-		}
+		exit(0);
 		delay = 0.0f;
 	}
 

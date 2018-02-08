@@ -150,11 +150,8 @@
     <ClCompile Include="Source\GameStateManagement\OptionState.cpp">
       <Filter>GameStateManagement</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameStateManagement\InstructionState.cpp">
-      <Filter>GameStateManagement</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameStateManagement\InstructionsState.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameStateManagement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

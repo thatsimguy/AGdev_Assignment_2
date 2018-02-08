@@ -175,11 +175,17 @@ void CMenuState::Render()
 void CMenuState::Exit()
 {
 	// Remove the entity from EntityManager
-	EntityManager::GetInstance()->RemoveEntity(MenuStateBackground);
-
+	//EntityManager::GetInstance()->RemoveEntity(MenuStateBackground);
+	//MenuStateBackground->SetIsDone(true);
 	// Remove the meshes which are specific to CMenuState
 	MeshBuilder::GetInstance()->RemoveMesh("MENUSTATE_BKGROUND");
+	MenuStateBackground->SetIsDone(true);
 	MeshBuilder::GetInstance()->RemoveMesh("Arrow");
+	Arrow->SetIsDone(true);
+
+	
+	//MeshBuilder::GetInstance()->RemoveMesh("")
 	// Detach camera from other entities
 	GraphicsManager::GetInstance()->DetachCamera();
+	
 }

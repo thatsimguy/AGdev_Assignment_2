@@ -25,6 +25,7 @@ public:
 	{
 		Game,
 		Return,
+		Leave,
 	};
 
 
@@ -45,5 +46,6 @@ private:
 
 	bool b_GAME;
 	bool b_RETURN;
+	bool b_Exit;
 
 };
