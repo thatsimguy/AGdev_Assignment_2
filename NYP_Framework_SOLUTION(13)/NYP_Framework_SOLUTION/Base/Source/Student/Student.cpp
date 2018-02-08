@@ -1,12 +1,14 @@
-#include "Enemy.h"
+#include "Student.h"
 #include "../EntityManager.h"
 #include "GraphicsManager.h"
 #include "RenderHelper.h"
-#include "../Waypoint/WaypointManager.h"
 
-CEnemy::CEnemy()
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+
+CStudent::CStudent()
 	: GenericEntity(NULL)
-	, defaultPosition(Vector3(0.0f,0.0f,0.0f))
+	, defaultPosition(Vector3(0.0f, 0.0f, 0.0f))
 	, defaultTarget(Vector3(0.0f, 0.0f, 0.0f))
 	, defaultUp(Vector3(0.0f, 0.0f, 0.0f))
 	, target(Vector3(0.0f, 0.0f, 0.0f))
@@ -14,39 +16,28 @@ CEnemy::CEnemy()
 	, maxBoundary(Vector3(0.0f, 0.0f, 0.0f))
 	, minBoundary(Vector3(0.0f, 0.0f, 0.0f))
 	, m_pTerrain(NULL)
-	, m_iWayPointIndex(-1)
-{
-	listOfWaypoints.clear();
-}
-
-
-CEnemy::~CEnemy()
+	, m_iSeed(0)
 {
 }
 
-void CEnemy::Init(void)
+
+CStudent::~CStudent()
+{
+}
+
+void CStudent::Init(float x, float y)
 {
 	// Set the default values
 	defaultPosition.Set(0, 0, 10);
 	defaultTarget.Set(0, 0, 0);
 	defaultUp.Set(0, 1, 0);
 
-	// Set up the waypoints
-	listOfWaypoints.push_back(0);
-	listOfWaypoints.push_back(1);
-	listOfWaypoints.push_back(2);
-
-	m_iWayPointIndex = 0;
-
 	// Set the current values
-	position.Set(10.0f, 0.0f, 0.0f);
-	//target.Set(10.0f, 0.0f, 450.0f);
-	CWaypoint* nextWaypoint = GetNextWaypoint();
-	if (nextWaypoint)
-		target = nextWaypoint->GetPosition();
+	position.Set(x, 0.0f, y);
+	if (m_pTerrain)
+		target = GenerateTarget();
 	else
-		target = Vector3(0, 0, 0);
-	cout << "Next target: " << target << endl;
+		target.Set(10.0f, 0.0f, 450.0f);
 	up.Set(0.0f, 1.0f, 0.0f);
 
 	// Set Boundary
@@ -57,19 +48,20 @@ void CEnemy::Init(void)
 	m_dSpeed = 10.0;
 
 	// Initialise the LOD meshes
-	InitLOD("Teacher", "Teacher", "Teacher");
+	InitLOD("Student", "Student", "Student");
 
 	// Initialise the Collider
 	this->SetCollider(true);
-	this->SetAABB(Vector3(1, 1, 1), Vector3(-1, -1, -1));
+	this->SetAABB(Vector3(5, -5, 5), Vector3(-5, -15, -5));
 
 	// Add to EntityManager
 	EntityManager::GetInstance()->AddEntity(this, true);
 
+	playerInfo = CPlayerInfo::GetInstance();
 }
 
 // Reset this player instance to default
-void CEnemy::Reset(void)
+void CStudent::Reset(void)
 {
 	// Set the current values to default values
 	position = defaultPosition;
@@ -78,29 +70,32 @@ void CEnemy::Reset(void)
 }
 
 // Set position
-void CEnemy::SetPos(const Vector3& pos)
+void CStudent::SetPos(const Vector3& pos)
 {
 	position = pos;
 }
 
 // Set target
-void CEnemy::SetTarget(const Vector3& target)
+void CStudent::SetTarget(const Vector3& target)
 {
+	//this->target.Set(target.x, target.y, target.z);
 	this->target = target;
 }
+
 // Set Up
-void CEnemy::SetUp(const Vector3& up)
+void CStudent::SetUp(const Vector3& up)
 {
 	this->up = up;
 }
+
 // Set the boundary for the player info
-void CEnemy::SetBoundary(Vector3 max, Vector3 min)
+void CStudent::SetBoundary(Vector3 max, Vector3 min)
 {
 	maxBoundary = max;
 	minBoundary = min;
 }
 // Set the terrain for the player info
-void CEnemy::SetTerrain(GroundEntity* m_pTerrain)
+void CStudent::SetTerrain(GroundEntity* m_pTerrain)
 {
 	if (m_pTerrain != NULL)
 	{
@@ -111,72 +106,46 @@ void CEnemy::SetTerrain(GroundEntity* m_pTerrain)
 }
 
 // Get position
-Vector3 CEnemy::GetPos(void) const
+Vector3 CStudent::GetPos(void) const
 {
 	return position;
 }
 
 // Get target
-Vector3 CEnemy::GetTarget(void) const
+Vector3 CStudent::GetTarget(void) const
 {
 	return target;
 }
 // Get Up
-Vector3 CEnemy::GetUp(void) const
+Vector3 CStudent::GetUp(void) const
 {
 	return up;
 }
 // Get the terrain for the player info
-GroundEntity* CEnemy::GetTerrain(void)
+GroundEntity* CStudent::GetTerrain(void)
 {
 	return m_pTerrain;
 }
 
-// Get next Waypoint for this CEnemy
-CWaypoint* CEnemy::GetNextWaypoint(void)
-{
-	if ((int)listOfWaypoints.size() > 0)
-	{
-		m_iWayPointIndex++;
-		if (m_iWayPointIndex >= (int)listOfWaypoints.size())
-			m_iWayPointIndex = 0;
-		return CWaypointManager::GetInstance()->GetWaypoint(listOfWaypoints[m_iWayPointIndex]);
-	}
-	else
-		return NULL;
-}
-
 // Update
-void CEnemy::Update(double dt)
+void CStudent::Update(double dt)
 {
 	Vector3 viewVector = (target - position).Normalized();
 	position += viewVector * (float)m_dSpeed * (float)dt;
-	//cout << position << "..." << viewVector << endl;
+	//	cout << position << " - " << target << "..." << viewVector << endl;
 
 	// Constrain the position
 	Constrain();
 
-	// Update the target
-	/*
-	if (position.z > 400.0f)
-	target.z = position.z * -1;
-	else if (position.z < -400.0f)
-	target.z = position.z * -1;
-	*/
-
-	if ((target - position).LengthSquared() < 25.0f)
-	{
-		CWaypoint* nextWaypoint = GetNextWaypoint();
-		if (nextWaypoint)
-			target = nextWaypoint->GetPosition();
-		else
-			target = Vector3(0, 0, 0);
-		cout << "Next target: " << target << endl;
-	}
+	//// Update the target
+	//if (position.z > 400.0f)
+	//	target.z = position.z * -1;
+	//else if (position.z < -400.0f)
+	//	target.z = position.z * -1;
 }
 
 // Constrain the position within the borders
-void CEnemy::Constrain(void)
+void CStudent::Constrain(void)
 {
 	// Constrain player within the boundary
 	if (position.x > maxBoundary.x - 1.0f)
@@ -188,19 +157,18 @@ void CEnemy::Constrain(void)
 	if (position.z < minBoundary.z + 1.0f)
 		position.z = minBoundary.z + 1.0f;
 
-
 	// Reached target, set new target
-	/*if (abs(((target.x - position.x) * (target.x - position.x) - (target.z - position.z)*(target.z - position.z))) < m_dSpeed)
+	if (abs(((target.x - position.x) * (target.x - position.x) - (target.z - position.z)*(target.z - position.z))) < m_dSpeed)
 	{
 		target = GenerateTarget();
-	}*/
+	}
 
 	// Reached door, delete
-	/*if (abs(((doorLocation.x - position.x) * (doorLocation.x - position.x) - (doorLocation.z - position.z)*(doorLocation.z - position.z))) < m_dSpeed)
+	if (abs(((doorLocation.x - position.x) * (doorLocation.x - position.x) - (doorLocation.z - position.z)*(doorLocation.z - position.z))) < m_dSpeed)
 	{
 		SetIsDone(true);
 		playerInfo->left--;
-	}*/
+	}
 
 	// if the y position is not equal to terrain height at that position, 
 	// then update y position to the terrain height
@@ -209,11 +177,11 @@ void CEnemy::Constrain(void)
 }
 
 // Render
-void CEnemy::Render(void)
+void CStudent::Render(void)
 {
 	MS& modelStack = GraphicsManager::GetInstance()->GetModelStack();
 	modelStack.PushMatrix();
-	modelStack.Translate(position.x, position.y, position.z);
+	modelStack.Translate(position.x, -10.f, position.z);
 	modelStack.Scale(scale.x, scale.y, scale.z);
 	if (GetLODStatus() == true)
 	{
@@ -226,7 +194,22 @@ void CEnemy::Render(void)
 	modelStack.PopMatrix();
 }
 
-void CEnemy::SetDoorLocation(const Vector3& doorLocation)
+// Generate New Target
+Vector3 CStudent::GenerateTarget(void)
+{
+	return Vector3(static_cast<float>(rand() % (int)((maxBoundary.x - minBoundary.x)*0.5)),
+		0.0f,
+		static_cast<float>(rand() % (int)((maxBoundary.x - minBoundary.x)*0.5)));
+}
+
+// Set random seed
+void CStudent::SetRandomSeed(const int m_iSeed)
+{
+	this->m_iSeed = m_iSeed;
+}
+
+// Set door location
+void CStudent::SetDoorLocation(const Vector3& doorLocation)
 {
 	this->doorLocation = doorLocation;
 }
