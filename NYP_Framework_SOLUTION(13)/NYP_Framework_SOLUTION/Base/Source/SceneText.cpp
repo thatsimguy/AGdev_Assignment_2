@@ -170,6 +170,18 @@ void SceneText::Init()
 	MeshBuilder::GetInstance()->GenerateRay("laser", 10.0f);
 	MeshBuilder::GetInstance()->GenerateQuad("GRIDMESH", Color(1, 1, 1), 10.f);
 
+	MeshBuilder::GetInstance()->GenerateOBJ("Door", "OBJ//door.obj");
+	MeshBuilder::GetInstance()->GetMesh("Door")->textureID = LoadTGA("Image//Door.tga");
+
+	MeshBuilder::GetInstance()->GenerateQuad("Pistolicon", Color(1, 1, 1), 2.f);
+	MeshBuilder::GetInstance()->GetMesh("Pistolicon")->textureID = LoadTGA("Image//pistol_icon.tga");
+
+	MeshBuilder::GetInstance()->GenerateOBJ("Student", "OBJ//student.obj");
+	MeshBuilder::GetInstance()->GetMesh("Student")->textureID = LoadTGA("Image//student.tga");
+
+	MeshBuilder::GetInstance()->GenerateOBJ("Teacher", "OBJ//teacher.obj");
+	MeshBuilder::GetInstance()->GetMesh("Teacher")->textureID = LoadTGA("Image//teacher.tga");
+
 	// Set up the Spatial Partition and pass it to the EntityManager to manage
 	CSpatialPartition::GetInstance()->Init(100, 100, 10, 10);
 	CSpatialPartition::GetInstance()->SetMesh("GRIDMESH");
@@ -186,13 +198,6 @@ void SceneText::Init()
 	aCube->SetCollider(true);
 	aCube->SetAABB(Vector3(0.5f, 0.5f, 0.5f), Vector3(-0.5f, -0.5f, -0.5f));
 	aCube->InitLOD("cube", "sphere", "cubeSG");
-
-	MeshBuilder::GetInstance()->GenerateOBJ("Door", "OBJ//door.obj");
-	MeshBuilder::GetInstance()->GetMesh("Door")->textureID = LoadTGA("Image//Door.tga");
-
-
-	MeshBuilder::GetInstance()->GenerateQuad("Pistolicon", Color(1, 1, 1), 2.f);
-	MeshBuilder::GetInstance()->GetMesh("Pistolicon")->textureID = LoadTGA("Image//pistol_icon.tga");
 
 	// Door object
 	m_doorLocation = Vector3(10.f, -10.f, 90.f);
@@ -257,7 +262,7 @@ void SceneText::Init()
 	theEnemy->Init();
 
 	groundEntity = Create::Ground("GRASS_DARKGREEN", "GEO_GRASS_LIGHTGREEN");
-//	Create::Text3DObject("text", Vector3(0.0f, 0.0f, 0.0f), "DM2210", Vector3(10.0f, 10.0f, 10.0f), Color(0, 1, 1));
+	//	Create::Text3DObject("text", Vector3(0.0f, 0.0f, 0.0f), "DM2210", Vector3(10.0f, 10.0f, 10.0f), Color(0, 1, 1));
 	Create::Sprite2DObject("crosshair", Vector3(0.0f, 0.0f, 0.0f), Vector3(10.0f, 10.0f, 10.0f));
 	Create::Sprite2DObject("Pistolicon", Vector3(170.0f, -150.0f, 0.0f), Vector3(270.0f, 200.0f, 200.0f));
 
@@ -272,12 +277,39 @@ void SceneText::Init()
 	playerInfo->SetTerrain(groundEntity);
 	theEnemy->SetTerrain(groundEntity);
 
+	// Create a CStudent instance
+	srand((int)time(NULL));
+	for (size_t i = 0; i < 10; i++)
+	{
+		theStudent = new CStudent();
+		float x = 1.0f + (i * rand() % 1000 - 500.0f);
+		float y = 1.0f + (i * rand() % 1000 - 500.0f);
+		theStudent->SetRandomSeed(rand());
+		theStudent->Init(x, y);
+		theStudent->SetTerrain(groundEntity);
+
+		// Target is the door (exit)
+		theStudent->SetTarget(Vector3(m_doorLocation.x, 0.f, m_doorLocation.z));
+
+		theStudent->SetDoorLocation(Vector3(m_doorLocation.x, 0.f, m_doorLocation.z));
+
+		CSceneNode* theNode = CSceneGraph::GetInstance()->AddNode(theStudent);
+		if (theNode == NULL)
+		{
+			cout << "EntityManager::AddEntity: Unable to add to scene graph!" << endl;
+		}
+
+		theStudent = NULL;
+
+		playerInfo->left++;
+	}
+
 	// Setup the 2D entities
 	float halfWindowWidth = Application::GetInstance().GetWindowWidth() / 2.0f;
 	float halfWindowHeight = Application::GetInstance().GetWindowHeight() / 2.0f;
 	float fontSize = 25.0f;
 	float halfFontSize = fontSize / 2.0f;
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 9; ++i)
 	{
 		textObj[i] = Create::Text2DObject("text", Vector3(-halfWindowWidth, -halfWindowHeight + fontSize*i + halfFontSize, 0.0f), "", Vector3(fontSize, fontSize, fontSize), Color(0.0f,1.0f,0.0f));
 	}
@@ -396,9 +428,16 @@ void SceneText::Update(double dt)
 	textObj[1]->SetText(ss.str());
 
 	std::ostringstream ss1;
-	ss1.precision(4);
-	ss1 << "Player:" << playerInfo->GetPos();
+	ss1 << "x pos:" << playerInfo->GetPos().x;
 	textObj[2]->SetText(ss1.str());
+
+	std::ostringstream ss2;
+	ss2 << "y pos:" << playerInfo->GetPos().y;
+	textObj[3]->SetText(ss2.str());
+
+	std::ostringstream ss3;
+	ss3 << "z pos:" << playerInfo->GetPos().z;
+	textObj[4]->SetText(ss3.str());
 }
 
 void SceneText::Render()
