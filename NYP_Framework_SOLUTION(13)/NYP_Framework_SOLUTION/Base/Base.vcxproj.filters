@@ -46,6 +46,9 @@
     <Filter Include="Lua">
       <UniqueIdentifier>{ce679d6f-cdf4-4922-bc28-c951603c2237}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Student">
+      <UniqueIdentifier>{61ea1349-ad41-4eee-be78-95714f5ce7e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -152,6 +155,9 @@
     </ClCompile>
     <ClCompile Include="Source\GameStateManagement\InstructionsState.cpp">
       <Filter>GameStateManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Student.cpp">
+      <Filter>Student</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="Source\GameStateManagement\InstructionsState.h">
       <Filter>GameStateManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Student.h">
+      <Filter>Student</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
