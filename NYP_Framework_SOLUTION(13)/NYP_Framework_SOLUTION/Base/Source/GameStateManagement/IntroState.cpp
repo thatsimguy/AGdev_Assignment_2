@@ -43,7 +43,7 @@ void CIntroState::Init()
 }
 void CIntroState::Update(double dt)
 {
-	if (KeyboardController::GetInstance()->IsKeyReleased(VK_SPACE))
+	if (KeyboardController::GetInstance()->IsKeyReleased(VK_SPACE) || KeyboardController::GetInstance()->IsKeyReleased(VK_RETURN))
 	{
 		cout << "Loading MenuState" << endl;
 		SceneManager::GetInstance()->SetActiveScene("MenuState");

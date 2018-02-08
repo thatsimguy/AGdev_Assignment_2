@@ -32,6 +32,7 @@ using namespace std;
 //this is the main bitch
 //this is the main bitch, yes it is
 //AI must be controlled by waypoint 
+//OK so ah Let me try the Game State Management thingy
 
 SceneText::SceneText()
 {
