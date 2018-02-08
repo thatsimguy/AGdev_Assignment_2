@@ -188,6 +188,20 @@ void CEnemy::Constrain(void)
 	if (position.z < minBoundary.z + 1.0f)
 		position.z = minBoundary.z + 1.0f;
 
+
+	// Reached target, set new target
+	/*if (abs(((target.x - position.x) * (target.x - position.x) - (target.z - position.z)*(target.z - position.z))) < m_dSpeed)
+	{
+		target = GenerateTarget();
+	}*/
+
+	// Reached door, delete
+	/*if (abs(((doorLocation.x - position.x) * (doorLocation.x - position.x) - (doorLocation.z - position.z)*(doorLocation.z - position.z))) < m_dSpeed)
+	{
+		SetIsDone(true);
+		playerInfo->left--;
+	}*/
+
 	// if the y position is not equal to terrain height at that position, 
 	// then update y position to the terrain height
 	if (position.y != m_pTerrain->GetTerrainHeight(position))
@@ -210,4 +224,9 @@ void CEnemy::Render(void)
 		}
 	}
 	modelStack.PopMatrix();
+}
+
+void CEnemy::SetDoorLocation(const Vector3& doorLocation)
+{
+	this->doorLocation = doorLocation;
 }

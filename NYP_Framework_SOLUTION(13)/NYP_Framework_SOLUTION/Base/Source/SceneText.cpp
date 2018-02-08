@@ -29,6 +29,9 @@
 using namespace std;
 
 //SceneText* SceneText::sInstance = new SceneText(SceneManager::GetInstance());
+//this is the main bitch
+//this is the main bitch, yes it is
+//AI must be controlled by waypoint 
 
 SceneText::SceneText()
 {
@@ -176,11 +179,26 @@ void SceneText::Init()
 	// Create entities into the scene
 	Create::Entity("reference", Vector3(0.0f, 0.0f, 0.0f)); // Reference
 	Create::Entity("lightball", Vector3(lights[0]->position.x, lights[0]->position.y, lights[0]->position.z)); // Lightball
+	
 
 	GenericEntity* aCube = Create::Entity("cube", Vector3(-20.0f, 0.0f, -20.0f));
 	aCube->SetCollider(true);
 	aCube->SetAABB(Vector3(0.5f, 0.5f, 0.5f), Vector3(-0.5f, -0.5f, -0.5f));
 	aCube->InitLOD("cube", "sphere", "cubeSG");
+
+	MeshBuilder::GetInstance()->GenerateOBJ("Door", "OBJ//door.obj");
+	MeshBuilder::GetInstance()->GetMesh("Door")->textureID = LoadTGA("Image//Door.tga");
+
+
+	MeshBuilder::GetInstance()->GenerateQuad("Pistolicon", Color(1, 1, 1), 2.f);
+	MeshBuilder::GetInstance()->GetMesh("Pistolicon")->textureID = LoadTGA("Image//pistol_icon.tga");
+
+	// Door object
+	m_doorLocation = Vector3(10.f, -10.f, 90.f);
+	GenericEntity* aDoor = Create::Asset("Door", m_doorLocation, Vector3(5.f, 5.f, 5.f));
+	aDoor->SetCollider(true);
+	aDoor->SetAABB(Vector3(0.2f, 0.2f, 0.2f), Vector3(-0.5f, -0.5f, -0.5f));
+	EntityManager::GetInstance()->AddEntity(aDoor, false);
 
 	// Add the pointer to this new entity to the Scene Graph
 	CSceneNode* theNode = CSceneGraph::GetInstance()->AddNode(aCube);
@@ -240,6 +258,7 @@ void SceneText::Init()
 	groundEntity = Create::Ground("GRASS_DARKGREEN", "GEO_GRASS_LIGHTGREEN");
 //	Create::Text3DObject("text", Vector3(0.0f, 0.0f, 0.0f), "DM2210", Vector3(10.0f, 10.0f, 10.0f), Color(0, 1, 1));
 	Create::Sprite2DObject("crosshair", Vector3(0.0f, 0.0f, 0.0f), Vector3(10.0f, 10.0f, 10.0f));
+	Create::Sprite2DObject("Pistolicon", Vector3(170.0f, -150.0f, 0.0f), Vector3(270.0f, 200.0f, 200.0f));
 
 	SkyBoxEntity* theSkyBox = Create::SkyBox("SKYBOX_FRONT", "SKYBOX_BACK",
 											 "SKYBOX_LEFT", "SKYBOX_RIGHT",
@@ -347,7 +366,28 @@ void SceneText::Update(double dt)
 	GraphicsManager::GetInstance()->UpdateLights(dt);
 
 	// Update the 2 text object values. NOTE: Can do this in their own class but i'm lazy to do it now :P
-	// Eg. FPSRenderEntity or inside RenderUI for LightEntity
+	// Output current weapon
+	//std::ostringstream ss2;
+	////ss2.precision(4);
+	//ss2 << "Pistol";
+	//textObj[2]->SetText(ss2.str());
+
+	// Output ammo of current weapon
+	/*std::ostringstream ss3;
+	ss3.precision(6);
+	int ammoOutput = 0;
+	int totalAmmo = 0;
+	ammoOutput = playerInfo->GetPrimaryAmmo();
+	totalAmmo = playerInfo->GetTotalPrimaryAmmo();
+	ss3 << "Ammo:" << ammoOutput << "/" << totalAmmo;
+	textObj[3]->SetText(ss3.str());*/
+
+	//// Output number of NPCs left
+	//std::ostringstream ss4;
+	////ss4.precision(4);
+	//ss4 << "Left:" << playerInfo->left;
+	//textObj[4]->SetText(ss4.str());
+	//// Eg. FPSRenderEntity or inside RenderUI for LightEntity
 	std::ostringstream ss;
 	ss.precision(5);
 	float fps = (float)(1.f / dt);

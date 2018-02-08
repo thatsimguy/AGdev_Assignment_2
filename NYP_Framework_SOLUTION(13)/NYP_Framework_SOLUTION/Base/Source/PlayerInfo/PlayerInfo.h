@@ -92,6 +92,22 @@ public:
 	// Constrain the position within the borders
 	void Constrain(void);
 
+	int GetPrimaryAmmo(void) const
+	{
+		return primaryWeapon->GetMagRound();
+	}
+
+
+	int GetTotalPrimaryAmmo(void) const
+	{
+		return primaryWeapon->GetTotalRound();
+	}
+
+	int score = 0;
+	int left = 0;
+
+
+
 	// Handling Camera
 	void AttachCamera(FPSCamera* _cameraPtr);
 	void DetachCamera(void);
