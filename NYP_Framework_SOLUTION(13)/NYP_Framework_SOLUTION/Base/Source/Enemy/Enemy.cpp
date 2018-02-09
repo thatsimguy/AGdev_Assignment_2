@@ -66,6 +66,7 @@ void CEnemy::Init(void)
 	// Add to EntityManager
 	EntityManager::GetInstance()->AddEntity(this, true);
 
+	playerInfo = CPlayerInfo::GetInstance();
 }
 
 // Reset this player instance to default
@@ -164,14 +165,31 @@ void CEnemy::Update(double dt)
 	target.z = position.z * -1;
 	*/
 
-	if ((target - position).LengthSquared() < 25.0f)
+	static bool chasing = false;
+	if (!chasing)
+	{
+		if ((target - position).LengthSquared() < 25.0f)
+		{
+			CWaypoint* nextWaypoint = GetNextWaypoint();
+			if (nextWaypoint)
+				target = nextWaypoint->GetPosition();
+		}
+		cout << "Next target: " << target << endl;
+	}
+
+	else
+		target = playerInfo->GetPos();
+
+	if ((playerInfo->GetPos() - position).Length() < 50 && !chasing)
+	{
+		chasing = true;
+	}
+	else if ((playerInfo->GetPos() - position).Length() > 50 && chasing)
 	{
 		CWaypoint* nextWaypoint = GetNextWaypoint();
 		if (nextWaypoint)
 			target = nextWaypoint->GetPosition();
-		else
-			target = Vector3(0, 0, 0);
-		cout << "Next target: " << target << endl;
+		chasing = false;
 	}
 }
 

@@ -11,6 +11,8 @@ using namespace std;
 #include "RenderHelper.h"
 #include "../SpriteEntity.h"
 #include "../EntityManager.h"
+#include "../SceneGraph/SceneNode.h"
+#include "../SceneGraph/SceneGraph.h"
 
 #include "KeyboardController.h"
 #include "SceneManager.h"
@@ -53,6 +55,9 @@ void CMenuState::Init()
 		Vector3(halfWindowWidth, halfWindowHeight, 2.f),
 		Vector3(25.0f, 25.0f, 25.0f));
 
+	CSceneNode* theMenu = CSceneGraph::GetInstance()->AddNode(MenuStateBackground);
+	CSceneNode* theArrow = CSceneGraph::GetInstance()->AddNode(Arrow);
+
 	cout << "CMenuState loaded\n" << endl;
 }
 void CMenuState::Update(double dt)
@@ -86,6 +91,7 @@ void CMenuState::Update(double dt)
 			SelectedOptions = Instructions;
 		else if (SelectedOptions == Instructions)
 			SelectedOptions = GAME;
+
 		else if (SelectedOptions == GAME)
 			SelectedOptions = Quit;
 		Delay = 0.0f;
@@ -174,18 +180,21 @@ void CMenuState::Render()
 }
 void CMenuState::Exit()
 {
+	// Detach camera from other entities
+	GraphicsManager::GetInstance()->DetachCamera();
+
 	// Remove the entity from EntityManager
-	//EntityManager::GetInstance()->RemoveEntity(MenuStateBackground);
 	//MenuStateBackground->SetIsDone(true);
 	// Remove the meshes which are specific to CMenuState
-	MeshBuilder::GetInstance()->RemoveMesh("MENUSTATE_BKGROUND");
-	MenuStateBackground->SetIsDone(true);
+
 	MeshBuilder::GetInstance()->RemoveMesh("Arrow");
 	Arrow->SetIsDone(true);
 
+	MenuStateBackground->SetIsDone(true);
+	MeshBuilder::GetInstance()->RemoveMesh("MENUSTATE_BKGROUND");
+	EntityManager::GetInstance()->RemoveEntity(MenuStateBackground);
+
 	
 	//MeshBuilder::GetInstance()->RemoveMesh("")
-	// Detach camera from other entities
-	GraphicsManager::GetInstance()->DetachCamera();
 	
 }

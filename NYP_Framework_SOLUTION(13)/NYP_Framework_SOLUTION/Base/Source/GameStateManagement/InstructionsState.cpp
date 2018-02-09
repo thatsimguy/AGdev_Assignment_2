@@ -1,6 +1,6 @@
-
 #include <iostream>
 using namespace std;
+
 #include "InstructionsState.h"
 #include "GL\glew.h"
 #include "../Application.h"
@@ -14,8 +14,6 @@ using namespace std;
 
 #include "KeyboardController.h"
 #include "SceneManager.h"
-
-#include "InstructionsState.h"
 
 
 //Hey Hey he didn't say its not possible right ? :3
@@ -106,7 +104,9 @@ void CInstructionState::Update(double dt)
 
 	if (KeyboardController::GetInstance()->IsKeyDown(VK_RETURN) && delay >= ButtonCooldown)
 	{
-		exit(0);
+		//exit(0);
+		SceneManager::GetInstance()->SetActiveScene("MenuState");
+
 		delay = 0.0f;
 	}
 
@@ -121,9 +121,6 @@ void CInstructionState::Update(double dt)
 		b_GAME = false;
 		b_RETURN = true;
 		break;
-
-
-
 	}
 
 
@@ -164,11 +161,11 @@ void CInstructionState::Render()
 
 void CInstructionState::Exit()
 {
-	// Remove the entity from EntityManager
-	//EntityManager::GetInstance()->RemoveEntity(InstructionStateBackground);
-	MeshBuilder::GetInstance()->RemoveMesh("INSTRUCTIONSTATE_BKGROUND");
-	MeshBuilder::GetInstance()->RemoveMesh("ARROW");
 	GraphicsManager::GetInstance()->DetachCamera();
-	InstructionStateBackground->SetIsDone(true);
+	// Remove the entity from EntityManager
+	MeshBuilder::GetInstance()->RemoveMesh("ARROW");
 
+	InstructionStateBackground->SetIsDone(true);
+	MeshBuilder::GetInstance()->RemoveMesh("INSTRUCTIONSTATE_BKGROUND");
+	EntityManager::GetInstance()->RemoveEntity(InstructionStateBackground);
 }

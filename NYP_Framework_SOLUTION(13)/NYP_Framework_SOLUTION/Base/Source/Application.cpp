@@ -199,6 +199,7 @@ void Application::Init()
 	SceneManager::GetInstance()->AddScene("MenuState", new CMenuState());
 	SceneManager::GetInstance()->AddScene("GameState", new SceneText());
 	SceneManager::GetInstance()->AddScene("InstructionsState", new CInstructionState());
+	//SceneManager::GetInstance()->AddScene("Options", new COptions());
 
 	// Set the active scene
 	SceneManager::GetInstance()->SetActiveScene("IntroState");
